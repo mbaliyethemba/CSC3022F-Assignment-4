@@ -5,4 +5,7 @@
 
 using namespace std;
 
+public:
+	ImageReader(String filename);
+
 #endif
