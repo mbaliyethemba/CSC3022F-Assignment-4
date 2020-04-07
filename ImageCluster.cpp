@@ -16,5 +16,7 @@ void ImageReader(char * filename){
 }
 
 void comment(std::ifstream & file, std::string & line){
-	
+	while(line.at(0) == '#'){
+		getline(file, line,'\n');
+	}
 }
