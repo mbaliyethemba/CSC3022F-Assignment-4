@@ -19,26 +19,6 @@ SHNMBA004::KMeansClusterer::KMeansClusterer(){
 
 SHNMBA004::KMeansClusterer::~KMeansClusterer(){
 	}
-	
-void SHNMBA004::KMeansClusterer::ImageReader(){
-	ppmImages = new string[100];
-	int s = 0;
-	DIR *fileDirectory;
-	struct dirent *entry;
-	if ( fileDirectory = opendir("Gradient_Numbers_PPMS/")){
-		while(entry = readdir(fileDirectory)){
-			if(strcmp(entry->d_name,".") != 0 && strcmp(entry->d_name,"..")){
-					//std::cout << entry->d_name << std::endl;
-					ppmImages[s] = entry->d_name;
-					s++;
-					
-			}
-		}
-	}
-	for(int i = 0; i < 100; i++){
-		
-	}
-}
 
 void SHNMBA004::KMeansClusterer::ppmReader(std::string filename){
 	std::ifstream inStream;
@@ -60,9 +40,34 @@ void SHNMBA004::KMeansClusterer::ppmReader(std::string filename){
 				buff = new int[3 * width * height];
 				inStream.read(dataPointer, height*width*3);
 			}
-		}	
+		}
+	inStream.close();	
 }
 
-
+void SHNMBA004::KMeansClusterer::grayscale(){
+	char *init, *reset;
+		unsigned char oldRed, oldGreen, oldBlue, newRed, newGreen, newBlue;
+		reset = dataPointer; // keep track of initial pointer position
+		for(int i = 0; i < width * height; i++){
+			init = dataPointer;
+			oldRed = *dataPointer;
+			dataPointer++;
+			oldGreen = *dataPointer;
+			dataPointer++;
+			oldBlue = *dataPointer;
+			newRed = (oldRed * 0.21) + (oldGreen * 0.72) + (oldBlue * 0.07);
+			newGreen = (oldRed * 0.21) + (oldGreen * 0.72) + (oldBlue * 0.07);
+			newBlue = (oldRed * 0.21) + (oldGreen * 0.72) + (oldBlue * 0.07);
+			dataPointer = init;
+			*dataPointer = newRed;
+			dataPointer++;
+			*dataPointer = newGreen;
+			dataPointer++;
+			*dataPointer = newBlue;
+			dataPointer++;
+		}
+		
+		dataPointer = reset; // reset pointer position
+}
 	
 
