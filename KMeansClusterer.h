@@ -21,9 +21,9 @@ namespace SHNMBA004{
 		public:
 			KMeansClusterer();
 			~KMeansClusterer();
-			void ImageReader();
 			void ppmReader(std::string filename);
 			void grayscale();
+			void charToInt();
 	};
 }
 #endif
