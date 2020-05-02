@@ -78,5 +78,19 @@ void SHNMBA004::KMeansClusterer::charToInt(){
 			buff.push_back((int)dataPointer[i]);
 		}
 	}
-	ppmHist.push_back(buff);
+	ppmList.push_back(buff);
+}
+
+void SHNMBA004::KMeansClusterer::hist(){
+	int count;
+	for(int q = 0; q < 255; q++){
+		for(int w = 0; w < width*height*3; w++){
+			if(buff[w] == q){
+				count++;
+			}
+		}
+		histogram.push_back(count);
+		count = 0;
+	}
+	ppmList.push_back(histogram);
 }
