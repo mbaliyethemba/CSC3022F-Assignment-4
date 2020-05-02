@@ -23,4 +23,9 @@ int main(int argc, char* argv[]){
 			}
 		}
 	}
+	for(int i = 0; i < 100; i++){
+		k.ppmReader(ppmImages[i]);
+		k.grayscale();
+		k.charToInt();
+	}
 }
