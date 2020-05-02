@@ -40,6 +40,29 @@ void SHNMBA004::KMeansClusterer::ImageReader(){
 	}
 }
 
+void SHNMBA004::KMeansClusterer::ppmReader(std::string filename){
+	std::ifstream inStream;
+	inStream.open(filename, std::ifstream::binary);
+	std::string line;
+		if(inStream.is_open()){
+			getline(inStream,line,'\n');
+			if(line == "P6"){
+				getline(inStream,line,'\n');
+				int found = line.find(" ");
+				std::string temp1 = line;
+				std::string temp2 = line;
+				temp1.erase(found);
+				temp2.substr(found);
+				width = std::stoi(temp1);
+				height = std::stoi(temp2);
+				maxColorVal = std::stoi(line);
+				dataPointer = new char[3 * width * height];
+				buff = new int[3 * width * height];
+				inStream.read(dataPointer, height*width*3);
+			}
+		}	
+}
+
 
 	
 
