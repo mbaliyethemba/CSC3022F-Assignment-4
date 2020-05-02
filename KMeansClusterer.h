@@ -2,6 +2,7 @@
 #define KMEANSCLUSTERER_H
 
 #include <fstream>
+#include <vector>
 namespace SHNMBA004{
 	class KMeansClusterer {
 		private:
@@ -15,13 +16,14 @@ namespace SHNMBA004{
 			int *binArray;
 			int val;
 			std::string *ppmImages;
-			int **ppmHist;
+			std::vector<std::vector<int>> ppmHist;
 			
 		public:
 			KMeansClusterer();
 			~KMeansClusterer();
 			void ImageReader();
 			void ppmReader(std::string filename);
+			void grayscale();
 	};
 }
 #endif
