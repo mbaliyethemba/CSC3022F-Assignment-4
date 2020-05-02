@@ -37,7 +37,6 @@ void SHNMBA004::KMeansClusterer::ppmReader(std::string filename){
 				height = std::stoi(temp2);
 				maxColorVal = std::stoi(line);
 				dataPointer = new char[3 * width * height];
-				buff = new int[3 * width * height];
 				inStream.read(dataPointer, height*width*3);
 			}
 		}
@@ -70,4 +69,14 @@ void SHNMBA004::KMeansClusterer::grayscale(){
 		dataPointer = reset; // reset pointer position
 }
 	
-
+void SHNMBA004::KMeansClusterer::charToInt(){
+	for(int i = 0; i < width*height*3; i++){
+		if((int)dataPointer[i] < 0){
+			buff.push_back((int)dataPointer[i] * (-1));
+		}
+		else{
+			buff.push_back((int)dataPointer[i]);
+		}
+	}
+	ppmHist.push_back(buff);
+}
