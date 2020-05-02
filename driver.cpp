@@ -27,5 +27,6 @@ int main(int argc, char* argv[]){
 		k.ppmReader(ppmImages[i]);
 		k.grayscale();
 		k.charToInt();
+		k.hist();
 	}
 }
