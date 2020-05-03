@@ -12,12 +12,9 @@ namespace SHNMBA004{
 			int maxColorVal; // Maximum color value
 			char *dataPointer; // A series of rows and columns (raster) that stores important binary
 			int *histogram;
-			std::vector<int> buff;
+			int *buff;
 			int *binArray;
 			int val;
-			std::string *ppmImages;
-			std::vector<std::vector<int>> ppmList;
-			std::vector<std::vector<int>> ppmHist;
 			
 		public:
 			KMeansClusterer();
@@ -26,6 +23,7 @@ namespace SHNMBA004{
 			void grayscale();
 			void charToInt();
 			void hist();
+			void binH(int num);
 	};
 }
 #endif
