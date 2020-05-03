@@ -12,7 +12,10 @@ int width;
 int height;
 int maxColorVal;
 int val;
+char *dataPointer; // A series of rows and columns (raster) that stores important binary
+int *histogram;
 int *buff;
+			
 
 SHNMBA004::KMeansClusterer::KMeansClusterer(){
 	}
@@ -21,9 +24,10 @@ SHNMBA004::KMeansClusterer::~KMeansClusterer(){
 	}
 
 void SHNMBA004::KMeansClusterer::ppmReader(std::string filename){
-	std::ifstream inStream;
+		std::ifstream inStream;
 	inStream.open(filename, std::ifstream::binary);
 	std::string line;
+		//bool flag = false;
 		if(inStream.is_open()){
 			getline(inStream,line,'\n');
 			if(line == "P6"){
@@ -37,10 +41,10 @@ void SHNMBA004::KMeansClusterer::ppmReader(std::string filename){
 				height = std::stoi(temp2);
 				maxColorVal = std::stoi(line);
 				dataPointer = new char[3 * width * height];
+				buff = new int[3 * width * height];
 				inStream.read(dataPointer, height*width*3);
 			}
-		}
-	inStream.close();	
+		}		
 }
 
 void SHNMBA004::KMeansClusterer::grayscale(){
@@ -72,25 +76,42 @@ void SHNMBA004::KMeansClusterer::grayscale(){
 void SHNMBA004::KMeansClusterer::charToInt(){
 	for(int i = 0; i < width*height*3; i++){
 		if((int)dataPointer[i] < 0){
-			buff.push_back((int)dataPointer[i] * (-1));
+			buff[i] = (int)dataPointer[i] * (-1);
 		}
 		else{
-			buff.push_back((int)dataPointer[i]);
+			buff[i] = (int)dataPointer[i];
 		}
 	}
-	ppmList.push_back(buff);
 }
 
 void SHNMBA004::KMeansClusterer::hist(){
 	int count;
+	histogram = new int[255];
 	for(int q = 0; q < 255; q++){
 		for(int w = 0; w < width*height*3; w++){
 			if(buff[w] == q){
 				count++;
 			}
 		}
-		histogram.push_back(count);
+		histogram[q] = count;
 		count = 0;
 	}
-	ppmList.push_back(histogram);
+}
+
+void SHNMBA004::KMeansClusterer::binH(int num){
+	val = 255/num;
+	int sum;
+	int a = 0;
+	int index = num;
+	binArray = new int[val];
+	for(int r = 0; r < val; r++){
+		for(int t = a; t < index; t++){
+			sum += histogram[t];
+		}
+		binArray[r] = sum;
+		sum = 0;
+		a += num;
+		index +=num;
+		
+	}
 }
