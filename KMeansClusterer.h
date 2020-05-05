@@ -32,6 +32,7 @@ namespace SHNMBA004{
 			double calculate_distance(int* x, int* y);
 			void load_distances();
 			void clusterprint();
+			friend std::ostream& operator <<(std::ofstream& os, const KMeansClusterer& kt);
 			//void bintoGroup();
 	};
 }
