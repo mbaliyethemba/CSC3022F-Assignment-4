@@ -126,10 +126,11 @@ void SHNMBA004::KMeansClusterer::binH(int num){
 	}
 }
 
-void SHNMBA004::KMeansClusterer::ReadingList(){
+void SHNMBA004::KMeansClusterer::ReadingList(std::string dataset, int b){
+	std::string file = dataset + "/";
 	DIR *fileDirectory;
 	struct dirent *entry;
-	if ( fileDirectory = opendir("Gradient_Numbers_PPMS/")){
+	if ( fileDirectory = opendir(file.c_str())){
 		while(entry = readdir(fileDirectory)){
 			if(strcmp(entry->d_name,".") != 0 && strcmp(entry->d_name,"..")){
 					ppmImages.push_back(entry->d_name);
@@ -141,7 +142,7 @@ void SHNMBA004::KMeansClusterer::ReadingList(){
 		grayscale();
 		charToInt();
 		hist();
-		binH(4);
+		binH(b);
 		ppmHist.push_back(binArray);
 	}
 }
