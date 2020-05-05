@@ -26,7 +26,7 @@ namespace SHNMBA004{
 			void charToInt();
 			void hist();
 			void binH(int num);
-			void ReadingList();
+			void ReadingList(std::string dataset, int b);
 			void centriod(int n);
 			void centriodArray();
 			double calculate_distance(int* x, int* y);
