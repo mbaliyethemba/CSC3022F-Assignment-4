@@ -15,6 +15,8 @@ namespace SHNMBA004{
 			int *buff;
 			int *binArray;
 			int val;
+			std::vector<std::string> ppmImages;
+			std::vector<int *> ppmHist;
 			
 		public:
 			KMeansClusterer();
@@ -24,6 +26,13 @@ namespace SHNMBA004{
 			void charToInt();
 			void hist();
 			void binH(int num);
+			void ReadingList();
+			void centriod(int n);
+			void centriodArray();
+			double calculate_distance(int* x, int* y);
+			void load_distances();
+			void clusterprint();
+			//void bintoGroup();
 	};
 }
 #endif
