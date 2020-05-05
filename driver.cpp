@@ -12,7 +12,14 @@ int main(int argc, char* argv[]){
 	if(argc < 2){
 		std::cout << "Not enough parameters" << std::endl;
 	}
-	k.ReadingList();
+	else if(argc == 2){
+		k.ReadingList(string(argv[1]),1);
+		k.centriod(10);
+		k.centriodArray();
+		k.load_distances();
+		k.clusterprint();
+	}
+	//k.ReadingList();
 	k.centriod(10);
 	k.centriodArray();
 	k.load_distances();
