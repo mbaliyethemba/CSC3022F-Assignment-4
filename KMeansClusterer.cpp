@@ -1,9 +1,15 @@
 #include "KMeansClusterer.h"
+#include "math.h"
 #include <iostream>
 #include <fstream>
 #include <cstring>
 #include <sstream>
 #include <dirent.h>
+#include <vector>
+#include <algorithm>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -12,9 +18,13 @@ int width;
 int height;
 int maxColorVal;
 int val;
-char *dataPointer; // A series of rows and columns (raster) that stores important binary
-int *histogram;
 int *buff;
+std::vector<int *> ppmHist;
+std::vector<int> randomnum;
+std::vector<int *> kpoints;
+int k;
+std::vector<double> distances;
+std::vector<int> clusters;
 			
 
 SHNMBA004::KMeansClusterer::KMeansClusterer(){
@@ -24,10 +34,9 @@ SHNMBA004::KMeansClusterer::~KMeansClusterer(){
 	}
 
 void SHNMBA004::KMeansClusterer::ppmReader(std::string filename){
-		std::ifstream inStream;
+	std::ifstream inStream;
 	inStream.open(filename, std::ifstream::binary);
 	std::string line;
-		//bool flag = false;
 		if(inStream.is_open()){
 			getline(inStream,line,'\n');
 			if(line == "P6"){
@@ -44,7 +53,7 @@ void SHNMBA004::KMeansClusterer::ppmReader(std::string filename){
 				buff = new int[3 * width * height];
 				inStream.read(dataPointer, height*width*3);
 			}
-		}		
+		}
 }
 
 void SHNMBA004::KMeansClusterer::grayscale(){
@@ -86,8 +95,8 @@ void SHNMBA004::KMeansClusterer::charToInt(){
 
 void SHNMBA004::KMeansClusterer::hist(){
 	int count;
-	histogram = new int[255];
-	for(int q = 0; q < 255; q++){
+	histogram = new int[256];
+	for(int q = 0; q < 256; q++){
 		for(int w = 0; w < width*height*3; w++){
 			if(buff[w] == q){
 				count++;
@@ -96,10 +105,11 @@ void SHNMBA004::KMeansClusterer::hist(){
 		histogram[q] = count;
 		count = 0;
 	}
+	
 }
 
 void SHNMBA004::KMeansClusterer::binH(int num){
-	val = 255/num;
+	val = 256/num;
 	int sum;
 	int a = 0;
 	int index = num;
@@ -115,3 +125,76 @@ void SHNMBA004::KMeansClusterer::binH(int num){
 		
 	}
 }
+
+void SHNMBA004::KMeansClusterer::ReadingList(){
+	DIR *fileDirectory;
+	struct dirent *entry;
+	if ( fileDirectory = opendir("Gradient_Numbers_PPMS/")){
+		while(entry = readdir(fileDirectory)){
+			if(strcmp(entry->d_name,".") != 0 && strcmp(entry->d_name,"..")){
+					ppmImages.push_back(entry->d_name);
+			}
+		}
+	}
+	for(int i = 0; i < ppmImages.size(); i++){
+		ppmReader(ppmImages[i]);
+		grayscale();
+		charToInt();
+		hist();
+		binH(4);
+		ppmHist.push_back(binArray);
+	}
+}
+
+void SHNMBA004::KMeansClusterer::centriod(int n){
+	k = n;
+	int num;
+	while(randomnum.size()!= k){
+		num = rand() % (ppmImages.size());
+		if(find(randomnum.begin(), randomnum.end(), num) == randomnum.end()){
+			randomnum.push_back(num);
+		}
+	}
+}
+
+void SHNMBA004::KMeansClusterer::centriodArray(){
+	for(int i = 0 ; i < k; i++){
+		kpoints.push_back(ppmHist[randomnum[i]]);
+	}
+}
+
+double SHNMBA004::KMeansClusterer::calculate_distance(int* x, int* y){
+	double multSum;
+	for(int i = 0; i < val; i++){
+		multSum = pow(x[i]-y[i], 2.0);
+	}
+	return sqrt(multSum);
+}
+
+void SHNMBA004::KMeansClusterer::load_distances(){
+	int minval = 0;
+	for(int q = 0; q < ppmImages.size(); q++){
+		for(int i = 0; i < k; i++){
+			if(ppmHist[q] == kpoints[i]){
+				minval = i;
+				break;
+			}
+		}
+	clusters.push_back(minval);	
+	}
+}
+
+void SHNMBA004::KMeansClusterer::clusterprint(){
+	std::string printout;
+	for(int j = 0; j < k ; j++){
+		std::cout << "cluster " << j << ":";
+		for(int i = 0; i < clusters.size(); i++){
+			if(clusters[i] == j){
+				std::cout << ppmImages[i] <<", ";
+			}
+		}
+		std::cout << "" << std::endl;	
+	}
+}
+
+
