@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <vector>
+#include <iostream>
 namespace SHNMBA004{
 	class KMeansClusterer {
 		private:
@@ -11,12 +12,12 @@ namespace SHNMBA004{
 			int height; // Height of the image
 			int maxColorVal; // Maximum color value
 			char *dataPointer; // A series of rows and columns (raster) that stores important binary
-			int *histogram;
-			int *buff;
-			int *binArray;
-			int val;
-			std::vector<std::string> ppmImages;
-			std::vector<int *> ppmHist;
+			int *histogram;//histogram for each image
+			int *buff;//integer array based on the character array
+			int *binArray; //histogram after compression
+			int val;//compression value
+			
+			std::vector<int *> ppmHist;//group of all the images
 			
 		public:
 			KMeansClusterer();
@@ -32,7 +33,8 @@ namespace SHNMBA004{
 			double calculate_distance(int* x, int* y);
 			void load_distances();
 			void clusterprint();
-			friend std::ostream& operator <<(std::ofstream& os, const KMeansClusterer& kt);
+			friend std::ostream& operator<<(std::ostream& os, const KMeansClusterer &kt);
+			std::vector<std::string> ppmImages;
 			//void bintoGroup();
 	};
 }
