@@ -25,15 +25,18 @@ std::vector<int *> kpoints;
 int k;
 std::vector<double> distances;
 std::vector<int> clusters;
+std::string name;
 			
-
-SHNMBA004::KMeansClusterer::KMeansClusterer(){
+namespace SHNMBA004{
+	//constructor
+KMeansClusterer::KMeansClusterer(){
+	}
+//destructor
+KMeansClusterer::~KMeansClusterer(){
 	}
 
-SHNMBA004::KMeansClusterer::~KMeansClusterer(){
-	}
-
-void SHNMBA004::KMeansClusterer::ppmReader(std::string filename){
+//Read the ppm image file
+void KMeansClusterer::ppmReader(std::string filename){
 	std::ifstream inStream;
 	inStream.open(filename, std::ifstream::binary);
 	std::string line;
@@ -56,7 +59,8 @@ void SHNMBA004::KMeansClusterer::ppmReader(std::string filename){
 		}
 }
 
-void SHNMBA004::KMeansClusterer::grayscale(){
+//converts the image file to grayscale
+void KMeansClusterer::grayscale(){
 	char *init, *reset;
 		unsigned char oldRed, oldGreen, oldBlue, newRed, newGreen, newBlue;
 		reset = dataPointer; // keep track of initial pointer position
@@ -81,8 +85,9 @@ void SHNMBA004::KMeansClusterer::grayscale(){
 		
 		dataPointer = reset; // reset pointer position
 }
-	
-void SHNMBA004::KMeansClusterer::charToInt(){
+
+//converts the character array from the ppm image to an integer buffered array
+void KMeansClusterer::charToInt(){
 	for(int i = 0; i < width*height*3; i++){
 		if((int)dataPointer[i] < 0){
 			buff[i] = (int)dataPointer[i] * (-1);
@@ -93,7 +98,8 @@ void SHNMBA004::KMeansClusterer::charToInt(){
 	}
 }
 
-void SHNMBA004::KMeansClusterer::hist(){
+//converts the image feature in a histogram for each of the ppm images
+void KMeansClusterer::hist(){
 	int count;
 	histogram = new int[256];
 	for(int q = 0; q < 256; q++){
@@ -108,7 +114,8 @@ void SHNMBA004::KMeansClusterer::hist(){
 	
 }
 
-void SHNMBA004::KMeansClusterer::binH(int num){
+//groups based on given number to allow for the compression of the image pixels
+void KMeansClusterer::binH(int num){
 	val = 256/num;
 	int sum;
 	int a = 0;
@@ -126,7 +133,8 @@ void SHNMBA004::KMeansClusterer::binH(int num){
 	}
 }
 
-void SHNMBA004::KMeansClusterer::ReadingList(std::string dataset, int b){
+//function to read each image from the directory
+void KMeansClusterer::ReadingList(std::string dataset, int b){
 	std::string file = dataset + "/";
 	DIR *fileDirectory;
 	struct dirent *entry;
@@ -147,7 +155,8 @@ void SHNMBA004::KMeansClusterer::ReadingList(std::string dataset, int b){
 	}
 }
 
-void SHNMBA004::KMeansClusterer::centriod(int n){
+//generate the random images used for clustering
+void KMeansClusterer::centriod(int n){
 	k = n;
 	int num;
 	while(randomnum.size()!= k){
@@ -158,7 +167,8 @@ void SHNMBA004::KMeansClusterer::centriod(int n){
 	}
 }
 
-void SHNMBA004::KMeansClusterer::centriodArray(){
+//centriod points converted to an array
+void KMeansClusterer::centriodArray(){
 	for(int i = 0 ; i < k; i++){
 		kpoints.push_back(ppmHist[randomnum[i]]);
 	}
@@ -172,7 +182,8 @@ double SHNMBA004::KMeansClusterer::calculate_distance(int* x, int* y){
 	return sqrt(multSum);
 }
 
-void SHNMBA004::KMeansClusterer::load_distances(){
+//compares the similarity of the images in order to cluster them
+void KMeansClusterer::load_distances(){
 	int minval = 0;
 	for(int q = 0; q < ppmImages.size(); q++){
 		for(int i = 0; i < k; i++){
@@ -185,8 +196,8 @@ void SHNMBA004::KMeansClusterer::load_distances(){
 	}
 }
 
-void SHNMBA004::KMeansClusterer::clusterprint(){
-	std::string printout;
+//basic print function used for the terminal
+void KMeansClusterer::clusterprint(){
 	for(int j = 0; j < k ; j++){
 		std::cout << "cluster " << j << ":";
 		for(int i = 0; i < clusters.size(); i++){
@@ -198,4 +209,18 @@ void SHNMBA004::KMeansClusterer::clusterprint(){
 	}
 }
 
+//override the << operator for output stream
+std::ostream& operator <<(std::ofstream& os, const KMeansClusterer &kt){
+	for(int j = 0; j < k ; j++){
+		os << "cluster " << j << ":";
+		for(int i = 0; i < clusters.size(); i++){
+			if(clusters[i] == j){
+				os << kt.ppmImages[i] <<", ";
+			}
+		}
+		os << "" << std::endl;	
+	}
+	return os;
+}
+}
 
